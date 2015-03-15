@@ -4,7 +4,7 @@ namespace Doctor\Extractor;
 
 use Smalot\PdfParser\Parser;
 
-class Pdf implements Extractor
+class Pdf extends AbstractExtractor
 {
     private $parser;
 
@@ -25,7 +25,7 @@ class Pdf implements Extractor
         return [
             'author'        => $this->extractString($details, 'Author'),
             'title'         => $this->extractString($details, 'Title'),
-            'creation_date' => $this->extractDate($details, 'CreationDate'),
+            'creation_date' => $this->stringToDate($this->extractString($details, 'CreationDate')),
             'content'       => $pdf->getText(),
         ];
     }
@@ -41,25 +41,5 @@ class Pdf implements Extractor
     private function extractString(array $data, $key)
     {
         return !empty($data[$key]) ? $data[$key] : '';
-    }
-
-    private function extractDate(array $data, $key)
-    {
-        $dateAsString = $this->extractString($data, $key);
-
-        if (empty($dateAsString)) {
-            return null;
-        }
-
-        $time = strtotime($dateAsString);
-
-        if ($time === false) {
-            return null;
-        }
-
-        $date = new \DateTime();
-        $date->setTimestamp($time);
-
-        return $date;
     }
 }

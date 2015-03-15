@@ -2,13 +2,15 @@
 
 namespace Doctor\Extractor;
 
-use Kurenai\Document;
 use Kurenai\DocumentParser;
 
-class Markdown implements Extractor
+class Markdown extends AbstractExtractor
 {
     private static $MARKDOWN_EXTENSIONS = ['md', 'mkd', 'markdown'];
 
+    /**
+     * @var DocumentParser $parser
+     */
     private $parser;
 
     public function __construct(DocumentParser $parser)
@@ -26,7 +28,7 @@ class Markdown implements Extractor
 
         return [
             'title'         => $document->get('title'),
-            'creation_date' => $this->extractDate($document, 'date'),
+            'creation_date' => $this->stringToDate($document->get('date')),
             'content'       => $document->getContent(),
         ];
     }
@@ -37,25 +39,5 @@ class Markdown implements Extractor
     public function supports($extension)
     {
         return in_array($extension, self::$MARKDOWN_EXTENSIONS);
-    }
-
-    private function extractDate(Document $document, $key)
-    {
-        $dateAsString = $document->get($key);
-
-        if (empty($dateAsString)) {
-            return null;
-        }
-
-        $time = strtotime($dateAsString);
-
-        if ($time === false) {
-            return null;
-        }
-
-        $date = new \DateTime();
-        $date->setTimestamp($time);
-
-        return $date;
     }
 }
