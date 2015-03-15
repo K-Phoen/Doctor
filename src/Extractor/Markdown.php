@@ -39,11 +39,6 @@ class Markdown implements Extractor
         return in_array($extension, self::$MARKDOWN_EXTENSIONS);
     }
 
-    private function extractString(array $data, $key)
-    {
-        return !empty($data[$key]) ? $data[$key] : '';
-    }
-
     private function extractDate(Document $document, $key)
     {
         $dateAsString = $document->get($key);
