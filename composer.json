@@ -1,0 +1,29 @@
+{
+    "name": "kphoen/doctor",
+    "type": "library",
+    "license": "MIT",
+    "description": "Metadata extraction made simple",
+    "keywords": ["metadata", "extractor", "extraction", "pdf", "word", "office", "odt", "markdown"],
+    "authors": [
+        {
+            "name": "Kévin Gomez",
+            "email": "contact@kevingomez.fr"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Doctor\\": "src/" }
+    },
+    "require": {
+        "php": ">=5.4"
+    },
+    "require-dev": {
+        "smalot/pdfparser": "~0.9",
+        "daylerees/kurenai": "~1.1",
+        "phpoffice/phpword": "~0.12"
+    },
+    "suggests": {
+        "smalot/pdfparser": "To extract metadata from pdf files",
+        "daylerees/kurenai": "To extract metadata from markdown files",
+        "phpoffice/phpword": "To extract metadata from doc, docx, rtf and odt files"
+    }
+}
