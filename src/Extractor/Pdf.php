@@ -26,6 +26,7 @@ class Pdf extends AbstractExtractor
             'author'        => $this->extractString($details, 'Author'),
             'title'         => $this->extractString($details, 'Title'),
             'creation_date' => $this->stringToDate($this->extractString($details, 'CreationDate')),
+            'keywords'      => $this->extractList($details, 'Keywords'),
             'content'       => $pdf->getText(),
         ];
     }
@@ -41,5 +42,16 @@ class Pdf extends AbstractExtractor
     private function extractString(array $data, $key)
     {
         return !empty($data[$key]) ? $data[$key] : '';
+    }
+
+    private function extractList(array $data, $key)
+    {
+        $list = $this->extractString($data, $key);
+
+        if (empty($list)) {
+            return [];
+        }
+
+        return array_map('trim', explode(',', $list));
     }
 }

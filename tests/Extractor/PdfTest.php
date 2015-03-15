@@ -49,6 +49,7 @@ class PdfTest extends \PHPUnit_Framework_TestCase
             'author'        => '',
             'title'         => '',
             'creation_date' => null,
+            'keywords'      => [],
             'content'       => '',
         ];
 

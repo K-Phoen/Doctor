@@ -13,6 +13,9 @@
     "autoload": {
         "psr-4": { "Doctor\\": "src/" }
     },
+    "autoload-dev": {
+        "psr-4": { "Doctor\\Tests\\": "tests/" }
+    },
     "require": {
         "php": ">=5.4"
     },
@@ -22,7 +25,10 @@
         "phpoffice/phpword": "~0.12",
 
         "phpunit/phpunit": "~4.0",
-        "mikey179/vfsStream": "~1.0"
+        "mikey179/vfsStream": "~1.0",
+
+        "symfony/yaml": "~2.0",
+        "symfony/finder": "~2.1"
     },
     "suggest": {
         "smalot/pdfparser": "To extract metadata from pdf files",
