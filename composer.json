@@ -21,7 +21,7 @@
         "daylerees/kurenai": "~1.1",
         "phpoffice/phpword": "~0.12",
 
-         "phpunit/phpunit": "~4.0"
+        "phpunit/phpunit": "~4.0"
     },
     "suggest": {
         "smalot/pdfparser": "To extract metadata from pdf files",
