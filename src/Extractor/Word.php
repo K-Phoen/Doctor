@@ -13,8 +13,6 @@ class Word implements Extractor
         'odt'  => 'ODText',
     ];
 
-    private $phpWord;
-
     /**
      * {@inheritDoc}
      */
