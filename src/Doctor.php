@@ -7,8 +7,14 @@ use Doctor\Extractor\Extractor;
 
 class Doctor
 {
+    /**
+     * @var array<Extractor> $extractors
+     */
     private $extractors = [];
 
+    /**
+     * @param array<Extractor> $extractors
+     */
     public function __construct(array $extractors = [])
     {
         foreach ($extractors as $extractor) {
@@ -16,11 +22,26 @@ class Doctor
         }
     }
 
+    /**
+     * Register a new extractor.
+     *
+     * @param Extractor $extractor The extractor.
+     */
     public function registerExtractor(Extractor $extractor)
     {
         $this->extractors[] = $extractor;
     }
 
+    /**
+     * Extract the metadata from a file.
+     *
+     * @param string $filePath  The path to the file.
+     * @param string $extension The file's extension. If null, will be guessed using the path.
+     *
+     * @throws ExtractorNotFoundException If the metadata can not be extracted.
+     *
+     * @return array The extracted metadata
+     */
     public function extract($filePath, $extension = null)
     {
         $extension = $extension ?: $this->getExtensionFromPath($filePath);
