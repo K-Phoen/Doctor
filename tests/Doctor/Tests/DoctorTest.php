@@ -73,6 +73,28 @@ class DoctorTest extends \PHPUnit_Framework_TestCase
         $doctor->extract('file.PdF');
     }
 
+    public function testExtractedMetadataHaveDefaultValues()
+    {
+        $extractor = $this->getExtractorMock('pdf');
+        $doctor    = new Doctor([$extractor]);
+
+        $extractor
+            ->expects($this->once())
+            ->method('extract')
+            ->with('file.pdf')
+            ->will($this->returnValue([
+                'author' => 'Joe' // only the author could be extracted
+            ]));
+
+        $this->assertSame([
+            'author'        => 'Joe', // but the response contains all kind of metadata
+            'title'         => '',
+            'creation_date' => null,
+            'keywords'      => [],
+            'content'       => '',
+        ], $doctor->extract('file.pdf'));
+    }
+
     /**
      * @expectedException \Doctor\Exception\ExtractorNotFoundException
      */
