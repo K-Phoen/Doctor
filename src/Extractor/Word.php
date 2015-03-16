@@ -39,6 +39,10 @@ class Word implements Extractor
 
     private function timestampToDateTime($timestamp)
     {
+        if (!$timestamp) {
+            return null;
+        }
+
         $date = new \DateTime();
         $date->setTimestamp($timestamp);
 
