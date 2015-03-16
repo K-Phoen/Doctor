@@ -27,9 +27,9 @@ class Markdown extends AbstractExtractor
         $document = $this->parser->parse($source);
 
         return [
-            'title'         => $document->get('title'),
+            'title'         => (string) $document->get('title'),
             'creation_date' => $this->stringToDate($document->get('date')),
-            'content'       => $document->getContent(),
+            'content'       => (string) $document->getContent(),
         ];
     }
 

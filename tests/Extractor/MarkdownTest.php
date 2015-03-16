@@ -17,47 +17,61 @@ class MarkdownTest extends \PHPUnit_Framework_TestCase
     {
         // and initialize the virtual filesystem
         $this->fs = vfsStream::setup('doctor', null, [
-            'complete.md'     => $this->getCompleteMarkdownDocument(),
-            'no_title.md'     => $this->getNoTitleMarkdownDocument(),
-            'no_date.md'      => $this->getNoDateMarkdownDocument(),
-            'invalid_date.md' => $this->getInvalidDateMarkdownDocument(),
+            'document.md' => 'content is irrelevant',
         ]);
     }
 
     /**
      * @dataProvider extractionProvider
      */
-    public function testExtract($file, $expectedResult)
+    public function testExtract($parsedDocument, $expectedResult)
     {
-        $parser    = $this->getParser();
+        $parser    = $this->getParserMock();
         $extractor = new Markdown($parser);
 
-        $this->assertEquals($expectedResult, $extractor->extract($this->fs->url() . DIRECTORY_SEPARATOR . $file, 'md'));
+        $parser
+            ->expects($this->once())
+            ->method('parse')
+            ->will($this->returnValue($parsedDocument));
+
+        $this->assertEquals($expectedResult, $extractor->extract($this->fs->url() . '/document.md', 'md'));
     }
 
     public function extractionProvider()
     {
+        $content = 'This is my **markdown** content!';
+
         $complete = [
             'title'         => 'Title',
             'creation_date' => \DateTime::createFromFormat('d-m-Y', '22-02-2015')->setTime(0, 0, 0),
-            'content'       => 'This is my **markdown** content!',
+            'content'       => $content,
         ];
         $noTitle = [
             'title'         => '',
             'creation_date' => \DateTime::createFromFormat('d-m-Y', '22-02-2015')->setTime(0, 0, 0),
-            'content'       => 'This is my **markdown** content!',
+            'content'       => $content,
         ];
         $noDate = [
             'title'         => 'Title',
             'creation_date' => null,
-            'content'       => 'This is my **markdown** content!',
+            'content'       => $content,
         ];
 
         return [
-            ['complete.md',     $complete],
-            ['no_title.md',     $noTitle],
-            ['no_date.md',      $noDate],
-            ['invalid_date.md', $noDate],
+            [$this->getDocumentMock([
+                ['title',   'Title'],
+                ['date',    '22-02-2015'],
+            ], $content), $complete],
+            [$this->getDocumentMock([
+                ['date',    '22-02-2015'],
+            ], $content), $noTitle],
+            [$this->getDocumentMock([
+                ['title',   'Title'],
+            ], $content), $noDate],
+            [$this->getDocumentMock([
+                ['title',   'Title'],
+                ['date',    'invalid'],
+            ], $content), $noDate],
         ];
     }
 
@@ -66,8 +80,7 @@ class MarkdownTest extends \PHPUnit_Framework_TestCase
      */
     public function testSupportWithValidExtension($extension)
     {
-        $parser    = $this->getParser();
-        $extractor = new Markdown($parser);
+        $extractor = new Markdown($this->getParserMock());
 
         $this->assertTrue($extractor->supports($extension));
     }
@@ -86,8 +99,7 @@ class MarkdownTest extends \PHPUnit_Framework_TestCase
      */
     public function testSupportWithInvalidExtension($extension)
     {
-        $parser    = $this->getParser();
-        $extractor = new Markdown($parser);
+        $extractor = new Markdown($this->getParserMock());
 
         $this->assertFalse($extractor->supports($extension));
     }
@@ -100,42 +112,31 @@ class MarkdownTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    private function getParser()
+    private function getParserMock()
     {
-        return new \Kurenai\DocumentParser();
+        return $this->getMock('Kurenai\DocumentParser');
     }
 
-    private function getCompleteMarkdownDocument()
+    private function getDocumentMock(array $data = [], $content = null)
     {
-        return
-'title: Title
-date: 22-02-2015
--------
-This is my **markdown** content!';
-    }
+        $document = $this->getMock('Kurenai\Document');
 
-    private function getNoTitleMarkdownDocument()
-    {
-        return
-'date: 22-02-2015
--------
-This is my **markdown** content!';
-    }
+        if (empty($data)) {
+            return $document;
+        }
 
-    private function getNoDateMarkdownDocument()
-    {
-        return
-'title: Title
--------
-This is my **markdown** content!';
-    }
+        if ($content !== null) {
+            $document
+                ->expects($this->once())
+                ->method('getContent')
+                ->will($this->returnValue($content));
+        }
 
-    private function getInvalidDateMarkdownDocument()
-    {
-        return
-'title: Title
-date: invalid
--------
-This is my **markdown** content!';
+        $document
+            ->expects($this->any())
+            ->method('get')
+            ->will($this->returnValueMap($data));
+
+        return $document;
     }
 }
