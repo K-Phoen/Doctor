@@ -9,5 +9,6 @@ php:
 
 before_script:
     - composer install --prefer-source
+    - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 script: './vendor/bin/phpunit --coverage-text && ./vendor/bin/behat -f progress'
