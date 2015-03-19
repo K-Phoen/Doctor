@@ -7,7 +7,7 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 
 use Doctor\Doctor;
-use Doctor\Extractor\Markdown;
+use Doctor\Extractor;
 
 class FeatureContext implements Context, SnippetAcceptingContext
 {
@@ -22,10 +22,14 @@ class FeatureContext implements Context, SnippetAcceptingContext
 
     private function initDoctor()
     {
-        $markdownExtractor = new Markdown(new \Kurenai\DocumentParser());
+        $markdownExtractor = new Extractor\Markdown(new \Kurenai\DocumentParser());
+        $pdfExtractor      = new Extractor\Pdf(new \Smalot\PdfParser\Parser());
+        $wordExtractor     = new Extractor\Word();
 
         $this->doctor = new Doctor([
             $markdownExtractor,
+            $pdfExtractor,
+            $wordExtractor,
         ]);
     }
 
@@ -46,10 +50,30 @@ class FeatureContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Then the creation date should be :value
+     */
+    public function theCreationDateShouldBe($value)
+    {
+        $date = isset($this->metadatas['creation_date']) ? $this->metadatas['creation_date']->format('Y-m-d H:i:s') : '';
+
+        \PHPUnit_Framework_Assert::assertEquals($value, $date);
+    }
+
+    /**
+     * @Then the keywords :keywords should be found
+     */
+    public function theKeywordsShouldBeFound($keywords)
+    {
+        $keywords = array_map('trim', explode(',', $keywords));
+
+        \PHPUnit_Framework_Assert::assertEquals($keywords, $this->metadatas['keywords']);
+    }
+
+    /**
      * @Then the :metadata should be :value
      */
     public function theMetadataShouldBe($metadata, $value)
     {
-        \PHPUnit_Framework_Assert::assertSame($this->metadatas[$metadata], $value);
+        \PHPUnit_Framework_Assert::assertSame($value, $this->metadatas[$metadata]);
     }
 }
