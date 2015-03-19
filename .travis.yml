@@ -10,4 +10,4 @@ php:
 before_script:
     - composer install --prefer-source
 
-script: ./vendor/bin/phpunit --coverage-text
+script: './vendor/bin/phpunit --coverage-text && ./vendor/bin/behat -f progress'

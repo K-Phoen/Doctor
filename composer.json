@@ -28,7 +28,9 @@
         "mikey179/vfsStream": "~1.0",
 
         "symfony/yaml": "~2.0",
-        "symfony/finder": "~2.1"
+        "symfony/finder": "~2.1",
+
+        "behat/behat": "~3.0"
     },
     "suggest": {
         "smalot/pdfparser": "To extract metadata from pdf files",
