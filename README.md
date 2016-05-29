@@ -9,6 +9,13 @@ This library currently supports the following formats:
   * pdf;
   * markdown.
 
+Status
+------
+
+This project is **DEPRECATED** and should NOT be used. 
+
+If someone magically appears and wants to maintain this project, I'll gladly give access to this repository.
+
 Usage
 -----
 
